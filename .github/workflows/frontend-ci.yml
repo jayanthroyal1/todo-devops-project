@@ -36,5 +36,4 @@ jobs:
                     run: echo "Frontend Build Successfully"
 
                   - name: Docker Build Check
-                    run: |
-                          docker build -t test-image .
+                    run: docker build -t frontend-image ./frontend
