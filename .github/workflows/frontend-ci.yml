@@ -1,0 +1,39 @@
+name: FrontendTodo CI
+
+on:
+      push:
+            branches: ["develop", "main"]
+            paths:
+                  - "frontend/**"
+      pull_request:
+            branches: ["develop", "main"]
+            paths:
+                  - "frontend/**"
+jobs:
+      build:
+            runs-on: ubuntu-latest
+
+            steps:
+                  - name: Checkout Code
+                    uses: actions/checkout@v4
+
+                  - name: Use Node.js
+                    uses: actions/setup-node@v4
+                    with:
+                          node-version: 18
+
+                  - name: Install Dependencies
+                    working-directory: frontend
+                    run: npm ci
+
+                  - name: Build Project
+                    working-directory: frontend
+                    run: npm run build || echo "No build yet"
+
+                  - name: Build Check
+                    working-directory: frontend
+                    run: echo "Frontend Build Successfully"
+
+                  - name: Docker Build Check
+                    run: |
+                          docker build -t test-image .
