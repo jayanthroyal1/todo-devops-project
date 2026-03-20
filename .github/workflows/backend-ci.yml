@@ -36,4 +36,4 @@ jobs:
         run: echo "Backend Build Successfully"
 
       - name: Docker Build Backend
-        run: docker build -f devops/docker/backend/Docker.prod -t backend-image ./backend
+        run: docker build -f ./devops/docker/backend/Dockerfile.prod -t backend-image ./backend

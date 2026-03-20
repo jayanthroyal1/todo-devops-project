@@ -36,4 +36,4 @@ jobs:
         run: echo "Frontend Build Successfully"
 
       - name: Docker Build frontend
-        run: docker build -f devops/docker/frontend/Docker.prod -t frontend-image ./frontend
+        run: docker build -f ./devops/docker/frontend/Dockerfile.prod -t frontend-image ./frontend
