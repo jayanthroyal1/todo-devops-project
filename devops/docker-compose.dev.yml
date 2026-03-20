@@ -1,0 +1,78 @@
+# version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../devops/docker/backend/Dockerfile.dev
+    container_name: todo-backend
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "5000:5000"
+    env_file:
+      - ../backend/.env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../devops/docker/frontend/Dockerfile.dev
+    container_name: todo-frontend
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: todo-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: todo-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mongo_data:
+
+
+# Docker Health Check cmd
+  # docker inspect --format='{{.State.Health.Status}}' todo-redis
+# For Logs
+  # docker inspect --format='{{.State.Health.Status}}' todo-redis
