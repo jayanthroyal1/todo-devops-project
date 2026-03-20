@@ -33,7 +33,7 @@ jobs:
 
       - name: Build Check
         working-directory: frontend
-        run: echo "Frontend Build Successfully"
+        run: echo "Frontend Build Successfully Completed"
 
       - name: Docker Build frontend
         run: docker build -f ./devops/docker/frontend/Dockerfile.prod -t frontend-image ./frontend
