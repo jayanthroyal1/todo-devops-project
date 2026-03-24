@@ -7,8 +7,8 @@ const createTodo = async (data, userId) => {
   });
 };
 
-const getTodo = async (userId) => {
-  return await Todo.find({ user: userId }).sort({ createdAt: -1 });
+const getTodo = (query) => {
+  return Todo.find(query);
 };
 
 // const updateTodo = async (id, data, userId) => {
