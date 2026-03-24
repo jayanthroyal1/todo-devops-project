@@ -16,3 +16,10 @@ GET /api/todos?page=1&limit=10&search=docker&status=completed
 | Search     | `?search=docker`    |
 | Filter     | `?status=completed` |
 | Sort       | `?sort=createdAt`   |
+
+
+Redis Caching
+
+Instead of hitting Database eveytime
+Request -> DB SLOW ❌
+Request → Redis (fast) → if miss → DB → store in Redis
