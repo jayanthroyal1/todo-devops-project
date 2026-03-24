@@ -7,6 +7,7 @@ const {
 const Todo = require("../models/Todo");
 const { getCacheKey, clearCache } = require("../utils/cache");
 const redis = require("../config/redis");
+const logger = require("../utils/logger");
 
 const create = async (req, res) => {
   try {
@@ -46,24 +47,22 @@ const getAll = async (req, res) => {
 
     const cacheData = await redis.get(cacheKey);
     if (cacheData) {
-      console.log("⚡ CACHE HIT");
+      logger.info("⚡ CACHE HIT");
       return res.status(200).json(JSON.parse(cacheData));
     }
-    console.log("🐢 CACHE MISS → DB HIT");
-
-    console.time("getTodos-Start");
+    logger.info("🐢 CACHE MISS → DB HIT");
     const todos = await getTodo(query)
       .sort({ [sort]: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
     const total = await Todo.countDocuments(query);
-    console.timeEnd("getTodos-End");
     const response = {
       total,
       page: Number(page),
       pages: Math.ceil(total / limit),
       data: todos,
     };
+    logger.info("Todo Creation data", response);
 
     // 🔥 3. STORE IN CACHE (TTL: 60 sec)
     await redis.set(cacheKey, JSON.stringify(response), "Ex", 60);
@@ -71,6 +70,7 @@ const getAll = async (req, res) => {
     res.status(200).json(response);
   } catch (err) {
     res.status(500).json({ message: err.message || "Server Error" });
+    logger.error("Unable to Create Todo", err.message);
   }
 };
 

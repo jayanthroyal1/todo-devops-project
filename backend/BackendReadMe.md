@@ -23,3 +23,13 @@ Redis Caching
 Instead of hitting Database eveytime
 Request -> DB SLOW ❌
 Request → Redis (fast) → if miss → DB → store in Redis
+
+
+# Helmet
+🧠 What it protects:
+XSS attacks
+Clickjacking
+MIME sniffing
+Security headers
+
+HTTP Request logs - Morgan
