@@ -5,6 +5,7 @@ require("./config/redis");
 
 const PORT = process.env.PORT || 5000;
 
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 // Connect DB
 connectDB();
 

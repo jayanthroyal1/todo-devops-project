@@ -6,6 +6,11 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log("Incoming:", req.method, req.url);
+  next();
+});
+
 // Routes
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/todos", require("./routes/todo.routes"));
