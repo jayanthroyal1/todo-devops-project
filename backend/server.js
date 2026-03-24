@@ -38,6 +38,6 @@ app.use(requestId);
 // Connect DB
 connectDB();
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on 🚀 Port ${PORT}`);
 });
