@@ -8,8 +8,10 @@ const {
   update,
   remove,
 } = require("../controllers/todo.controller");
+const validate = require("../middleware/validate");
+const { createTodoSchema } = require("../validators/todo.validator");
 
-router.post("/", protect, create);
+router.post("/", protect, validate(createTodoSchema), create);
 router.get("/", protect, getAll);
 router.put("/:id", protect, update);
 router.delete("/:id", protect, remove);

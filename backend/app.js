@@ -1,5 +1,6 @@
 const express = require("express");
 const redis = require("./config/redis");
+const { apiLimiter } = require("./middleware/rateLimit");
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use("/api/auth", require("./routes/auth.routes"));
+app.use("/api/auth", apiLimiter, require("./routes/auth.routes"));
 app.use("/api/todos", require("./routes/todo.routes"));
 
 // Health
