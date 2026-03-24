@@ -7,3 +7,12 @@
 | Middleware  | Auth, roles             |
 | Config      | DB/Redis                |
 | Utils       | Helpers                 |
+
+
+GET /api/todos?page=1&limit=10&search=docker&status=completed
+| Feature    | Example             |
+| ---------- | ------------------- |
+| Pagination | `?page=1&limit=10`  |
+| Search     | `?search=docker`    |
+| Filter     | `?status=completed` |
+| Sort       | `?sort=createdAt`   |

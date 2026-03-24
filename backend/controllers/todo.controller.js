@@ -4,6 +4,7 @@ const {
   updateTodo,
   deleteTodo,
 } = require("../services/todo.service");
+const Todo = require("../models/Todo");
 
 const create = async (req, res) => {
   console.log("CREATE TODO HIT");
@@ -22,12 +23,43 @@ const create = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      status,
+      sort = "createdAt",
+    } = req.query;
+
+    const query = {
+      user: req.user.id,
+    };
+
+    //Search
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
+
+    // Filter
+    if (status) {
+      query.status = status;
+    }
+
     console.time("getTodos-Start");
-    const todos = await getTodo(req.user.id);
+    const todos = await getTodo(query)
+      .sort({ [sort]: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Todo.countDocuments(query);
     console.timeEnd("getTodos-End");
-    res.status(201).json(todos);
+    res.status(200).json({
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
+      data: todos,
+    });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message || "Server Error" });
   }
 };
 

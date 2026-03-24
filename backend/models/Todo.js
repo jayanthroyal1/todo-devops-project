@@ -15,6 +15,11 @@ const todoSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    status: {
+      type: String,
+      enum: ["pending", "completed"],
+      default: "pending",
+    },
     attachments: [
       {
         url: String,
@@ -25,6 +30,6 @@ const todoSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-todoSchema.index({ user: 1 });
+todoSchema.index({ user: 1, title: "text" });
 
 module.exports = mongoose.model("Todo", todoSchema);
