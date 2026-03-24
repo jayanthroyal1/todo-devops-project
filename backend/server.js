@@ -7,7 +7,7 @@ const connectDB = require("./config/db");
 const { limiter } = require("./middleware/rateLimit");
 const errorHandler = require("./middleware/error");
 const logger = require("./utils/logger");
-const requestId = require("./config/requestID");
+const requestId = require("./config/requestId");
 require("./config/redis");
 
 const PORT = process.env.PORT || 5000;
