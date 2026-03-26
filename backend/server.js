@@ -14,6 +14,7 @@ const requestId = require("./config/requestId");
 require("./config/redis");
 
 const PORT = process.env.PORT || 5000;
+const HOST = "0.0.0.0";
 
 // 🔐 Security
 app.use(helmet());
@@ -41,15 +42,23 @@ app.use(
   }),
 );
 
-// Connect DB
-connectDB();
-
-// ❗ IMPORTANT: Routes should be inside app.js
-
 // ❌ Error handler MUST be last
 app.use(errorHandler);
 
-// 🚀 Start server
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on 🚀 Port ${PORT}`);
-});
+// Start only after DB is ready
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, HOST, () => {
+      console.log(`Server running on 🚀 Port ${PORT} and Host ${HOST}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+// ❗ IMPORTANT: Routes should be inside app.js
