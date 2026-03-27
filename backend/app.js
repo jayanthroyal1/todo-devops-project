@@ -22,8 +22,8 @@ app.use(
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://13.235.195.155",
-  "http://13.235.195.155:3000",
+  "http://13.235.195.153",
+  "http://13.235.195.153:3000",
 ];
 
 // 🌍 CORS (dynamic for prod)
