@@ -65,6 +65,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/auth", apiLimiter, require("./routes/auth.routes"));
 app.use("/api/todos", require("./routes/todo.routes"));
+app.use("/api/upload", require("./routes/upload.routes"));
 
 // Health
 app.get("/health", (req, res) => {

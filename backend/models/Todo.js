@@ -14,18 +14,17 @@ const todoSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     status: {
       type: String,
       enum: ["pending", "completed"],
       default: "pending",
     },
-    attachments: [
-      {
-        url: String,
-        type: String,
-      },
-    ],
+    attachment: {
+      fileUrl: String,
+      fileName: String,
+    },
   },
   { timestamps: true },
 );
