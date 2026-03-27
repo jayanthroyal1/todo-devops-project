@@ -9,7 +9,7 @@ services:
     volumes:
       - ../backend:/app
       - /app/node_modules
-    command: sh -c "npm install && npm run dev"
+    # command: sh -c "npm install && npm run dev"
     ports:
       - "5000:5000"
     env_file:
@@ -21,10 +21,17 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:5000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+     test:
+      [
+        "CMD",
+        "node",
+       "-e",
+       "require('http').get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"
+      ]     
+     interval: 10s
+     timeout: 5s
+     retries: 5
+     start_period: 15s
       
 
   frontend:
