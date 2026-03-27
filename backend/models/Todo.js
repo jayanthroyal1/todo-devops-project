@@ -21,10 +21,12 @@ const todoSchema = new mongoose.Schema(
       enum: ["pending", "completed"],
       default: "pending",
     },
-    attachment: {
-      fileUrl: String,
-      fileName: String,
-    },
+    attachments: [
+      {
+        fileUrl: String,
+        fileName: String,
+      },
+    ],
   },
   { timestamps: true },
 );
