@@ -77,13 +77,14 @@ const todoSlice = createSlice({
       // FETCH
       .addCase(fetchTodos.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.data;
-        state.total = action.payload.total;
-        state.page = action.payload.page;
-        state.pages = action.payload.pages;
+        state.items = action.payload.data || [];
+        state.total = action.payload.total || 0;
+        state.page = action.payload.page || 1;
+        state.pages = action.payload.pages || 1;
       })
       .addCase(fetchTodos.rejected, (state, action) => {
         state.loading = false;
@@ -91,8 +92,18 @@ const todoSlice = createSlice({
       })
 
       // CREATE
+      .addCase(createTodo.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(createTodo.fulfilled, (state, action) => {
+        state.loading = false;
         state.items.unshift(action.payload);
+        state.total += 1;
+      })
+      .addCase(createTodo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
       // UPDATE
@@ -109,6 +120,7 @@ const todoSlice = createSlice({
       // DELETE
       .addCase(deleteTodo.fulfilled, (state, action) => {
         state.items = state.items.filter((todo) => todo._id !== action.payload);
+        state.total = Math.max(0, state.total - 1);
       });
   },
 });

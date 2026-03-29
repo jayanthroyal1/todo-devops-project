@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { createTodo } from "../../features/todos/todoSlice";
+import { uploadMultipleFilesApi } from "../../api/upload.api";
 import AttachmentDropzone from "./AttachementDropZone";
 import Button from "../common/Button";
 import Input from "../common/Input";
@@ -16,6 +17,7 @@ const TodoForm = () => {
   });
 
   const [files, setFiles] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,10 +27,24 @@ const TodoForm = () => {
     }
 
     try {
+      setSubmitting(true);
+
+      let attachments = [];
+
+      // ✅ Upload files first
+      if (files.length > 0) {
+        const uploadedFiles = await uploadMultipleFilesApi(files);
+
+        attachments = uploadedFiles.map((file) => ({
+          fileUrl: file.fileUrl,
+        }));
+      }
+
+      // ✅ Then create todo
       await dispatch(
         createTodo({
           ...form,
-          attachments: files,
+          attachments,
         }),
       ).unwrap();
 
@@ -39,9 +55,12 @@ const TodoForm = () => {
         description: "",
         status: "pending",
       });
+
       setFiles([]);
     } catch (error) {
       toast.error(error || "Failed to create todo");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -80,8 +99,8 @@ const TodoForm = () => {
 
       <AttachmentDropzone files={files} setFiles={setFiles} />
 
-      <Button type="submit" className="w-full">
-        Create Todo
+      <Button type="submit" className="w-full" disabled={submitting}>
+        {submitting ? "Creating..." : "Create Todo"}
       </Button>
     </form>
   );
